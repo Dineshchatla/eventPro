@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Booking - Sign Up</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e6f0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section {
+            background: #053a5d;
+            color: white;
+            padding: 30px;
+            width: 50%;
+        }
+
+        .info-section h1 {
+            margin-bottom: 20px;
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-section ul li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-section ul li::before {
+            content: "✔";
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .form-section {
+            width: 50%;
+            padding: 40px;
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #007acc;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 70%;
+            right: -20px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .toggle-password i {
+            font-size: 18px;
+            color: #007acc;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #005b9e;
+        }
+
+        .signin-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .signin-link a {
+            color: #007acc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signin-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="info-section">
+            <h1>Why choose EventBookings for your event ticketing?</h1>
+            <ul>
+                <li>Simple, easy-to-use platform</li>
+                <li>Lowest ticketing fees</li>
+                <li>Dedicated customer support team</li>
+                <li>Powerful features</li>
+            </ul>
+        </div>
+        <div class="form-section">
+            <h2>Create a free account now</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="firstName">First name</label>
+                    <input type="text" id="firstName" placeholder="First name">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last name</label>
+                    <input type="text" id="lastName" placeholder="Last name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" placeholder="Email address">
+                </div>
+                <div class="form-group">
+                    <label for="organizationCode">Organization Code</label>
+                    <input type="text" id="organizationCode" placeholder="Organization Code">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Password">
+                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+                    <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <button type="button" class="btn" onclick="validateForm()">Sign up</button>
+                <div class="signin-link">
+                    By clicking "Sign up", you agree to EventBookings Terms & Conditions and have read the Privacy Policy.<br>
+                    Already have an account? <a href="signin.html">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to validate the form
+        function validateForm() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const organizationCode = document.getElementById('organizationCode').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const userType = "user";
+            if (!firstName) {
+                alert('First name is required.');
+                return false;
+            }
+
+            if (!lastName) {
+                alert('Last name is required.');
+                return false;
+            }
+
+            if (!email || !emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+
+            if (!organizationCode) {
+                alert('Organization Code is required.');
+                return false;
+            }
+
+            if (!password) {
+                alert('Password is required.');
+                return false;
+            }
+
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return false;
+            }
+            
+
+            fetch("http://localhost:8080/main/signup", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    firstName,
+    lastName,
+    email,
+    organizationCode,
+    password
+  })
+})
+.then(response => {
+  if (!response.ok) throw new Error("Request failed");
+  return response.text();
+})
+.then(data => {
+  alert("Login successful!");
+   window.location.href = `/home?firstName=${encodeURIComponent(firstName)}`; // Or wherever you want to redirect
+})
+.catch(error => {
+  console.error("Error:", error); // See real error in browser console
+  alert("Failed to submit form");
+});
+
+
+            return true;
+        }
+
+        // Function to toggle password visibility
+        function togglePassword(fieldId, button) {
+            const inputField = document.getElementById(fieldId);
+            const icon = button.querySelector('i');
+
+            if (inputField.type === 'password') {
+                inputField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                inputField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>

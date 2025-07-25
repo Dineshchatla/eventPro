@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create New Event</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #e6f0ff;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin-top: 50px;
+      max-width: 800px;
+    }
+    h2 {
+      color: #0047ab;
+    }
+    .btn-outline-primary, .btn-primary {
+      border-color: #0a346e;
+      background-color: #0056d2;
+      color: white;
+    }
+    .btn-outline-primary:hover, .btn-primary:hover {
+      background-color: #003d91;
+      border-color: #003d91;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #0047ab;
+    }
+    .form-control, .form-select {
+      border: 1px solid #0047ab;
+      color: #0047ab;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #003d91;
+      box-shadow: 0 0 5px rgba(0, 61, 145, 0.5);
+    }
+    .card {
+      border: 1px solid #b3d4ff;
+      background-color: #f0f8ff;
+    }
+    .btn-success {
+      background-color: #008cba;
+      border-color: #008cba;
+    }
+    .btn-success:hover {
+      background-color: #006e9a;
+      border-color: #006e9a;
+    }
+  </style>
+</head>
+<body class="d-flex justify-content-center align-items-center">
+  <div class="container">
+    <h2 class="text-center">Create New Event</h2>
+
+    <form id="eventForm">
+      <div class="mb-3">
+        <label for="eventName" class="form-label">Event Name *</label>
+        <input type="text" class="form-control" id="eventName" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Select the event type *</label>
+        <div class="btn-group w-100" role="group">
+          <input type="radio" class="btn-check" name="eventType" id="venue" autocomplete="off" />
+          <label class="btn btn-outline-primary" for="venue">Venue Event</label>
+
+          <input type="radio" class="btn-check" name="eventType" id="online" autocomplete="off" checked />
+          <label class="btn btn-outline-primary" for="online">Online Event</label>
+
+          <input type="radio" class="btn-check" name="eventType" id="undecided" autocomplete="off" />
+          <label class="btn btn-outline-primary" for="undecided">Undecided</label>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="eventBanner" class="form-label">Upload Event Banner *</label>
+        <input type="file" class="form-control" id="eventBanner" required />
+        <small class="text-muted">Supported formats: JPG, PNG, GIF. Max size: 5MB.</small>
+      </div>
+
+      <div class="card p-3 mb-3">
+        <label for="platform" class="form-label">Select Platform</label>
+        <select class="form-select" id="platform">
+          <option selected>Zoom</option>
+          <option>Google Meet</option>
+          <option>Microsoft Teams</option>
+        </select>
+
+        <label class="form-label mt-2" for="meetingUrl">Meeting URL *</label>
+        <input type="url" class="form-control mb-2" id="meetingUrl" placeholder="https://zoom.us/..." required />
+
+        <div class="row g-2">
+          <div class="col">
+            <input type="text" class="form-control" id="meetingId" placeholder="Meeting ID" />
+          </div>
+          <div class="col">
+            <input type="password" class="form-control" id="meetingPassword" placeholder="Password" />
+          </div>
+        </div>
+
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="checkbox" id="addUrlEventPage" checked />
+          <label class="form-check-label" for="addUrlEventPage">Add URL on the event page</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="includeDetailsEmail" checked />
+          <label class="form-check-label" for="includeDetailsEmail">Include details on emails</label>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Select event date & time *</label>
+        <div class="row g-2">
+          <div class="col-md-4">
+            <label for="startDate">Start Date</label>
+            <input type="date" class="form-control" id="startDate" value="2025-06-08" />
+          </div>
+          <div class="col-md-4">
+            <label for="startTime">Start Time</label>
+            <input type="time" class="form-control" id="startTime" value="17:30" />
+          </div>
+          <div class="col-md-4">
+            <label for="duration">Duration</label>
+            <input type="text" class="form-control" id="duration" value="1h" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label for="timezone">Timezone</label>
+          <select class="form-select" id="timezone">
+            <option selected>Asia/Kolkata (GMT+05:30)</option>
+          </select>
+          <div class="form-check mt-1">
+            <input class="form-check-input" type="checkbox" id="noConvertTimezone" checked />
+            <label class="form-check-label" for="noConvertTimezone">Do not convert to customer’s timezone</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="currency">Select Currency</label>
+          <select class="form-select" id="currency">
+            <option selected>INR</option>
+            <option>USD</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="organizationCode">Organization Code *</label>
+        <input type="text" class="form-control" id="organizationCode" placeholder="leave empty to set public" />
+      </div>
+
+      <div class="mb-3">
+        <label for="category">Choose a category for your event</label>
+        <select class="form-select" id="category">
+          <option selected disabled>Select Category</option>
+          <option>Education</option>
+          <option>Technology</option>
+          <option>Health</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-success w-100" onclick="submitcreateEvent(event)">
+        Create Event
+      </button>
+    </form>
+  </div>
+
+  <script>
+    function submitcreateEvent(event) {
+      event.preventDefault();
+
+      const eventName = document.getElementById("eventName").value.trim();
+      const eventType = document.querySelector('input[name="eventType"]:checked')?.id || "";
+      const platform = document.getElementById("platform").value;
+      const meetingUrl = document.getElementById("meetingUrl").value.trim();
+      const meetingId = document.getElementById("meetingId").value.trim();
+      const meetingPassword = document.getElementById("meetingPassword").value.trim();
+      const addUrlEventPage = document.getElementById("addUrlEventPage").checked;
+      const includeDetailsEmail = document.getElementById("includeDetailsEmail").checked;
+      const startDate = document.getElementById("startDate").value;
+      const startTime = document.getElementById("startTime").value;
+      const duration = document.getElementById("duration").value.trim();
+      const timezone = document.getElementById("timezone").value;
+      const noConvertTimezone = document.getElementById("noConvertTimezone").checked;
+      const currency = document.getElementById("currency").value;
+      const organizationCode = document.getElementById("organizationCode").value.trim();
+      if(!organizationCode) {
+        organizationCode = "public"; 
+      }
+      const category = document.getElementById("category").value;
+      const eventBannerInput = document.getElementById("eventBanner");
+
+      const formData = new FormData();
+      formData.append("image", eventBannerInput.files[0]);
+
+      fetch("http://localhost:8080/api/upload", {
+        method: "POST",
+        body: formData
+      })
+        .then(response => {
+          if (!response.ok) throw new Error("Banner upload failed");
+          return response.json();
+        })
+        .then(data => {
+          const bannerUrl = data.bannerUrl;
+          createEvent(
+            eventName, eventType, bannerUrl, platform,
+            meetingUrl, meetingId, meetingPassword,
+            addUrlEventPage, includeDetailsEmail,
+            startDate, startTime, duration,
+            timezone, noConvertTimezone, currency, organizationCode, category
+          );
+        })
+        .catch(error => {
+          console.error("Error uploading banner:", error);
+          alert("Failed to upload banner");
+        });
+    }
+
+    function createEvent(
+      eventName, eventType, eventBanner, platform,
+      meetingUrl, meetingId, meetingPassword,
+      addUrlEventPage, includeDetailsEmail,
+      startDate, startTime, duration,
+      timezone, noConvertTimezone, currency, organizationCode, category
+    ) {
+      if (!eventName || !eventType || !eventBanner || !platform || !meetingUrl || !startDate || !startTime || !duration || !timezone || !currency || !category) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      fetch("http://localhost:8080/api/createEvent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventName,
+          eventType,
+          eventBanner,
+          platform,
+          meetingUrl,
+          meetingId,
+          meetingPassword,
+          addUrlEventPage,
+          includeDetailsEmail,
+          startDate,
+          startTime,
+          duration,
+          timezone,
+          noConvertTimezone,
+          currency,
+          organizationCode,
+          category
+        })
+      })
+        .then(response => {
+          if (!response.ok) throw new Error("Event creation failed");
+          return response.text();
+        })
+        .then(data => {
+          alert("Event created successfully!");
+          window.location.href = "/adminDash";
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("Failed to create event");
+        });
+    }
+  </script>
+</body>
+</html>

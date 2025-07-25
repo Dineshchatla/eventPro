@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Management Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Flatpickr CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #212529;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #033580; /* Bootstrap primary blue */
+      height: 100vh;
+      padding: 20px;
+      color: white;
+      position: fixed;
+      overflow-y: auto;
+    }
+
+    .sidebar h4 {
+      color: #ffffff;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar hr {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .sidebar .nav-link {
+      color: #cfe2ff;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .content {
+      margin-left: 250px;
+      padding: 30px;
+      background-color: #f8f9fa;
+      min-height: 100vh;
+    }
+
+    h2,
+    h5 {
+      color: #1c3a67;
+    }
+
+    .card {
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgb(13 110 253 / 0.15);
+      border: none;
+      background-color: white;
+      color: #212529;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 20px rgb(13 110 253 / 0.3);
+    }
+
+    .notification-icon {
+      position: relative;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #dc3545; /* Bootstrap danger red */
+      color: white;
+      border-radius: 50%;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      user-select: none;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767.98px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+
+      .content {
+        margin-left: 0;
+        padding: 15px;
+      }
+      .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Ensure content flows top-to-bottom */
+  min-height: 250px; /* Set a consistent height for all cards */
+}
+
+
+    }
+    footer {
+  background-color: #06162f; /* Match the sidebar color */
+  color: white;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px; /* Match sidebar width */
+  height: 100%;
+  background-color: #05182c; /* Sidebar color */
+  z-index: -1;
+}
+
+footer .container {
+  position: relative;
+  z-index: 2; /* Ensures the content is above the overlay */
+}
+
+@media (max-width: 767.98px) {
+  footer::before {
+    display: none; /* Remove overlay on smaller screens */
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="d-flex flex-column flex-md-row">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h4>Event Management</h4>
+      <hr />
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/create-events">Create Event</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/manage-events">Manage Events</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/user-management">User Management</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content w-100">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dashboard</h2>
+        <div class="notification-icon" title="Notifications">
+          <img src="https://img.icons8.com/material-rounded/24/0d6efd/bell.png" alt="Notifications" />
+          <span class="notification-badge">3</span>
+        </div>
+      </div>
+
+
+
+<!-- Stats Cards -->
+<div class="row g-4">
+  <div class="col-md-4 d-flex">
+    <div class="card p-4 flex-fill d-flex flex-column">
+      <h5 class="mb-3">Total Events Done So Far</h5>
+      <p class="mb-1 fs-4 fw-semibold">345 Events</p>
+      <small class="text-muted">Filter: Month/Year</small>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-flex">
+    <div class="card p-4 flex-fill d-flex flex-column">
+      <h5 class="mb-3">Ongoing Events</h5>
+      <p class="mb-1 fs-4 fw-semibold">12 Events</p>
+      <ul class="mt-2">
+        <li>Event 1 - 10th June</li>
+        <li>Event 2 - 12th June</li>
+        <li>Event 3 - 15th June</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-4 d-flex">
+    <div class="card p-4 flex-fill d-flex flex-column">
+      <h5 class="mb-3">Upcoming Events</h5>
+      <!-- Calendar input -->
+      <input id="calendar" class="form-control mt-3" style="max-width: 280px;" />
+    </div>
+  </div>
+</div>
+
+
+
+      <!-- Event List -->
+      <section class="mt-5">
+        <h5 class="mb-4">Event List</h5>
+        <div class="row g-4" id="eventContainer">
+  <!-- Event cards will be added here -->
+</div>
+
+<script>
+  fetch('http://localhost:8080/api/events')
+  .then(response => response.json())
+  .then(events => {
+    const container = document.getElementById('eventContainer');
+    const limitedEvents = events.slice(0, 5);
+
+    let html = '';
+    limitedEvents.forEach(event => {
+      html += `
+        <div class="col-md-3 col-sm-6">
+          <div class="card h-100">
+            <img src="http://localhost:8080/images/${event.eventBanner}" class="card-img-top" alt="Event" />
+            <div class="card-body">
+              <h6 class="card-title">${event.eventName}</h6>
+              <p class="mb-1">Date: ${event.startDate}</p>
+              <p class="mb-0">Location: ${event.location || 'Online'}</p>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    container.innerHTML = html;
+  }).catch(error => console.error('Error fetching events:', error));
+</script>
+
+          
+        <div class="text-center mt-4">
+          <a href="#" class="btn btn-primary">View All Events</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <script>
+    flatpickr("#calendar", {
+      inline: true,
+      enableTime: false,
+      dateFormat: "d M Y",
+      defaultDate: "today",
+      // Optional: Highlight some event dates
+      onDayCreate: function (dObj, dStr, fp, dayElem) {
+        const eventDates = ["2025-06-10", "2025-06-12", "2025-06-15"];
+        const date = dayElem.dateObj;
+        const dateStr = date.toISOString().slice(0, 10);
+        if (eventDates.includes(dateStr)) {
+          dayElem.style.backgroundColor = "#0d6efd";  // Bootstrap primary blue
+          dayElem.style.color = "white";
+          dayElem.style.borderRadius = "50%";
+        }
+      }
+    });
+  </script>
+</body>
+<footer>
+  <div class="container">
+    <div class="row">
+      <!-- About Section -->
+      <div class="col-md-4 mb-3">
+        <h5>About Us</h5>
+        <p>
+          We organize and manage the best events with unparalleled efficiency
+          and creativity. Join us for an unforgettable experience.
+        </p>
+      </div>
+      <!-- Links Section -->
+      <div class="col-md-4 mb-3">
+        <h5>Quick Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white text-decoration-none">Home</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Events</a></li>
+          <li><a href="#" class="text-white text-decoration-none">Contact Us</a></li>
+          <li><a href="#" class="text-white text-decoration-none">About</a></li>
+        </ul>
+      </div>
+      <!-- Contact Section -->
+      <div class="col-md-4 mb-3">
+        <h5>Contact Us</h5>
+        <ul class="list-unstyled">
+          <li><i class="bi bi-envelope me-2"></i>info@eventmanager.com</li>
+          <li><i class="bi bi-telephone me-2"></i>+1 234 567 890</li>
+          <li><i class="bi bi-geo-alt me-2"></i>123 Event Street, City, Country</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="bg-light" />
+    <div class="text-center">
+      &copy; 2025 Event Management System. All Rights Reserved.
+    </div>
+  </div>
+</footer>
+
+
+
+
+</html>
+
+
+
+
+
+

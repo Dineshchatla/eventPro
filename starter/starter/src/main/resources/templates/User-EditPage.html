@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Edit Profile</title>
+<style>
+  /* CSS Variables for colors and font */
+  :root {
+    --color-background: #f8fafc;
+    --color-primary: #1e293b; /* darker gray/blue */
+    --color-secondary: #64748b; /* neutral gray */
+    --color-accent: #3b82f6; /* vibrant blue */
+    --color-danger: #ef4444; /* softer red */
+    --color-success: #10b981; /* green for success */
+    --color-input-bg: #ffffff;
+    --color-card-bg: #ffffff;
+    --color-border: #e2e8f0;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --border-radius: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --box-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition-fast: 0.15s ease;
+  }
+
+  /* Reset and base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0;
+  }
+  
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  
+  a:hover,
+  a:focus {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+
+  /* Container */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      padding: 3rem 2rem;
+    }
+  }
+
+  /* Header */
+  .page-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+  
+  .page-title {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+  }
+  
+  @media (min-width: 768px) {
+    .page-title {
+      font-size: 2.5rem;
+    }
+  }
+  
+  .page-description {
+    color: var(--color-secondary);
+    font-size: 1.125rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Form */
+  .profile-form {
+    background-color: var(--color-card-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .profile-form {
+      padding: 2.5rem;
+    }
+  }
+
+  /* Form grid */
+  .form-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  /* Form elements */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 0.9375rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background-color: var(--color-input-bg);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+  
+  .form-text {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--color-secondary);
+    font-size: 0.8125rem;
+  }
+
+  /* Profile picture */
+  .profile-pic-section {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-pic-wrapper {
+    display: inline-flex;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: var(--box-shadow);
+  }
+  
+  .file-upload-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-accent);
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+  
+  .file-upload-label:hover {
+    background-color: #2563eb;
+  }
+  
+  .file-upload-input {
+    display: none;
+  }
+
+  /* Sections */
+  .form-section {
+    grid-column: 1 / -1;
+    background-color: #f8fafc;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    color: var(--color-primary);
+  }
+
+  /* History list */
+  .history-list {
+    list-style: none;
+  }
+  
+  .history-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9375rem;
+  }
+  
+  .history-item:last-child {
+    border-bottom: none;
+  }
+  
+  .history-date {
+    color: var(--color-secondary);
+    font-weight: 500;
+  }
+  
+  .history-action {
+    color: var(--color-primary);
+  }
+
+  /* Buttons */
+  .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .btn {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-primary {
+    background-color: var(--color-accent);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow-md);
+  }
+  
+  .btn-danger {
+    background-color: var(--color-danger);
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow-md);
+  }
+  
+  .btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+  }
+  
+  .btn-outline:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+
+  /* Footer note */
+  .footer-note {
+    text-align: center;
+    color: var(--color-secondary);
+    font-size: 0.875rem;
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <h1 class="page-title">Edit Your Profile</h1>
+      <p class="page-description">Update your personal information, security settings, and preferences</p>
+    </header>
+
+    <form class="profile-form" id="profile-form" novalidate>
+      <div class="form-grid">
+        <div class="profile-pic-section">
+          <div class="profile-pic-wrapper">
+            <img src="https://i.pravatar.cc/120" alt="Profile Picture" class="profile-pic" id="profile-pic-preview">
+          </div>
+          <label for="profile-pic-upload" class="file-upload-label">
+            Change Photo
+            <input type="file" id="profile-pic-upload" class="file-upload-input" accept="image/*">
+          </label>
+          <small class="form-text">JPG, PNG or GIF. Max size 2MB</small>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" class="form-control" placeholder="Your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" class="form-control" placeholder="+1 555 123 4567">
+        </div>
+
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" class="form-control" placeholder="City, Country">
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-title">Change Password</h2>
+          <div class="form-group">
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" class="form-control" placeholder="Enter current password">
+          </div>
+          <div class="form-group">
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" class="form-control" placeholder="Enter new password">
+            <small class="form-text">Minimum 8 characters with at least one number</small>
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm New Password</label>
+            <input type="password" id="confirm-password" class="form-control" placeholder="Confirm new password">
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-title">Account Activity</h2>
+          <ul class="history-list">
+            <li class="history-item">
+              <span class="history-date">Today</span>
+              <span class="history-action">Viewed profile settings</span>
+            </li>
+            <li class="history-item">
+              <span class="history-date">Jun 5, 2025</span>
+              <span class="history-action">Updated email address</span>
+            </li>
+            <li class="history-item">
+              <span class="history-date">May 28, 2025</span>
+              <span class="history-action">Changed password</span>
+            </li>
+            <li class="history-item">
+              <span class="history-date">Apr 15, 2025</span>
+              <span class="history-action">Account created</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-outline">Cancel</button>
+          <button type="button" class="btn btn-danger" id="delete-account-btn">Delete Account</button>
+        </div>
+      </div>
+    </form>
+
+    <p class="footer-note">Need help? <a href="#">Contact our support team</a></p>
+  </div>
+
+<script>
+  // Profile picture upload preview
+  const profilePicUpload = document.getElementById('profile-pic-upload');
+  const profilePicPreview = document.getElementById('profile-pic-preview');
+
+  profilePicUpload.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('File size should be less than 2MB');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        profilePicPreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Confirm delete account button
+  const deleteBtn = document.getElementById('delete-account-btn');
+  deleteBtn.addEventListener('click', () => {
+    const confirmed = confirm('Are you sure you want to delete your account? This will permanently remove all your data and cannot be undone.');
+    if (confirmed) {
+      // Placeholder for delete account logic
+      alert('Account deletion requested. Redirecting to confirmation...');
+    }
+  });
+
+  // Form validation and submission
+  const form = document.getElementById('profile-form');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    
+    // Basic validation
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    let isValid = true;
+    
+    if (!name.value.trim()) {
+      name.style.borderColor = 'var(--color-danger)';
+      isValid = false;
+    }
+    
+    if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)) {
+      email.style.borderColor = 'var(--color-danger)';
+      isValid = false;
+    }
+    
+    if (isValid) {
+      // Show success feedback
+      alert('Profile updated successfully!');
+      
+      // Reset validation styles
+      name.style.borderColor = '';
+      email.style.borderColor = '';
+    } else {
+      // Scroll to first error
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  });
+
+  // Reset validation on input
+  document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('input', () => {
+      input.style.borderColor = '';
+    });
+  });
+</script>
+</body>
+</html>

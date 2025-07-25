@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Event Ticket</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Your existing styles */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .background {
+      background: linear-gradient(to right, #f5faff, #e0f7fa);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .ticket {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .ticket h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .ticket-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .qr-section img {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+
+    .ticket-details {
+      text-align: left;
+      margin-top: 20px;
+      width: 100%;
+      background: #f1f9fa;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .ticket-details p {
+      margin: 5px 0;
+    }
+
+    .ticket-actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ticket-actions button {
+      padding: 10px 15px;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .ticket-actions button:hover {
+      background: #005b9e;
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="ticket" id="ticket">
+      <h2>🎟️ Event Entry Pass</h2>
+      <div class="ticket-body">
+        <div class="qr-section">
+          <img th:src="@{'http://localhost:8080/images/' + ${eventBanner}}"  alt="QR Code">
+          <p><strong>Event ID:</strong> <span th:text="${'din' + eventId + userId}"></span></p>
+        </div>
+        <div class="ticket-details">
+          <p><strong>Event:</strong> <span th:text="${eventName}"></span></p>
+          <p><strong>Date:</strong> <span th:text="${eventDate}"></span></p>
+          <p><strong>Platform:</strong> <span th:text="${eventPlatform}"></span></p>
+          <p><strong>MeetingId:</strong> <span th:text="${meetingId}"></span></p>
+          <p><strong>Password:</strong> <span th:text="${meetingPassword}"></span></p>
+          <p><strong>Name:</strong> <span th:text="${userName}"></span></p>
+        </div>
+      </div>
+      <div class="ticket-actions">
+        <button data-bs-toggle="modal" data-bs-target="#printModal">🖨️ Print Ticket</button>
+        <button data-bs-toggle="modal" data-bs-target="#shareModal">📤 Share Ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print Modal -->
+  <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="printModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="printModalLabel">Print Ticket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Do you want to print this ticket?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="printTicket()">Print</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="shareModalLabel">Share Ticket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-success w-100 mb-2" onclick="shareViaWhatsApp()">Share via WhatsApp</button>
+          <button class="btn btn-primary w-100" onclick="shareViaEmail()">Share via Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function printTicket() {
+      const ticket = document.getElementById('ticket');
+      const printWindow = window.open('', '', 'width=800,height=600');
+      printWindow.document.write('<html><head><title>Print Ticket</title></head><body>');
+      printWindow.document.write(ticket.outerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+    function shareViaWhatsApp() {
+      const ticketText = `
+🎟️ Event Ticket
+Event: AI Summit 2025
+Date: June 15, 2025
+Venue: HICC, Hyderabad
+Name: Sravani Yallavula
+Event ID: EVT123456789`;
+
+      const whatsappURL = `https://wa.me/?text=${encodeURIComponent(ticketText)}`;
+      window.open(whatsappURL, '_blank');
+    }
+
+    function shareViaEmail() {
+      const ticketText = `
+🎟️ Event Ticket
+Event: AI Summit 2025
+Date: June 15, 2025
+Venue: HICC, Hyderabad
+Name: Sravani Yallavula
+Event ID: EVT123456789`;
+
+      const emailURL = `mailto:?subject=Your Event Ticket&body=${encodeURIComponent(ticketText)}`;
+      window.open(emailURL, '_self');
+    }
+  </script>
+</body>
+</html>

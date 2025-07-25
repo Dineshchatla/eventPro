@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-blue-900 font-sans">
+  <script>
+    
+  </script>
+  <div class="max-w-6xl mx-auto py-10 px-6">
+    
+    <!-- 🖼️ Banner -->
+    <div class="mb-8">
+      <img src="" alt="Event Banner"
+           class="rounded-lg shadow-md w-full h-64 object-cover border-4 border-blue-100" id="eventBanner"/>
+    </div>
+
+    <!-- 📄 Event Info -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 shadow-sm">
+      <h1 class="text-3xl font-bold text-blue-800 mb-2"><span th:text="${eventData.eventName}"></span></h1>
+      <p class="text-blue-700">📍 Location: Benguluru International Convention Centre</p>
+      <p class="text-blue-700">🕒 Date & Time: <span th:text="${eventData.startDate}"></span>, <span th:text="${eventData.startTime}"></span></p>
+    </div>
+
+    <!-- 🧾 Agenda -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 shadow-sm">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">🧾 Event Agenda</h2>
+      <ul class="space-y-2 text-blue-700 list-disc list-inside">
+        <li>10:00 AM - Opening Ceremony</li>
+        <li>11:00 AM - Keynote by Industry Expert</li>
+        <li>12:30 PM - Networking Lunch</li>
+        <li>02:00 PM - Panel Discussions</li>
+        <li>04:00 PM - Award Distribution</li>
+      </ul>
+    </div>
+
+    <!-- 👥 Participants -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 shadow-sm">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">👥 Registered Attendees</h2>
+      <ul class="text-blue-700 space-y-1 list-disc list-inside">
+        <li>John Doe – john@example.com</li>
+        <li>Jane Smith – jane@example.com</li>
+        <li>Amit Kumar – amit@example.com</li>
+        <li>Fatima Noor – fatima@example.com</li>
+      </ul>
+    </div>
+
+    <!-- 📑 Documents -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 shadow-sm">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">📑 Documents & Links</h2>
+      <ul class="space-y-2">
+        <li><a href="#" class="text-blue-600 underline hover:text-blue-800">Event Brochure</a></li>
+        <li><a href="#" class="text-blue-600 underline hover:text-blue-800">Presentation Slides</a></li>
+        <li><a href="#" class="text-blue-600 underline hover:text-blue-800">Registration Form</a></li>
+      </ul>
+    </div>
+
+    <!-- 📊 Analytics -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 shadow-sm">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">📊 Event Analytics</h2>
+      <div class="text-blue-700 space-y-1">
+        <p>✅ Total Registrations: <strong>124</strong></p>
+        <p>✅ Attendance Rate: <strong>87%</strong></p>
+        <p>⭐ Average Feedback: <strong>4.5/5</strong></p>
+      </div>
+    </div>
+
+    <!-- 📝 Admin Notes -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 shadow-sm">
+      <h2 class="text-xl font-semibold text-blue-800 mb-4">📝 Admin Notes</h2>
+      <textarea class="w-full h-32 p-4 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-blue-800 placeholder-blue-400" placeholder="Write your notes here..."></textarea>
+    </div>
+     
+    <!-- 🔙 Back Button -->
+    <div class="text-right">
+      <button onclick="editEvent()  " class="inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"> Edit Event</button>
+      <button class="inline-block bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition" onclick="deleteEvent()"> Delete Event</button>
+      <a href="/adminDash" class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">← Back to Dashboard</a>
+    </div>
+
+  </div>
+  <script>
+    let eventData = {};
+    const eventId = new URLSearchParams(window.location.search).get("id");
+    console.log("Event ID:", eventId);
+    if (!eventId) {
+      console.error("No event ID provided in the URL.");
+      document.body.innerHTML = "<h1 class='text-red-500 text-center'>Error: No event ID provided.</h1>";
+      throw new Error("No event ID provided in the URL.");
+    }
+    fetch(`http://localhost:8080/api/eventdetail?id=${eventId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("Event Data:", data);
+        // Assuming data is an object with eventData property
+        eventData = data;
+        console.log("Event Data:", eventData.eventName, eventData.eventBanner, eventData.category, eventData.startDate, eventData.startTime);
+        // Populate the HTML with event data
+        document.querySelector('h1 span').textContent = eventData.eventName;
+        document.querySelector('#eventBanner').src = `http://localhost:8080/images/${eventData.eventBanner}` || 'https://via.placeholder.com/600x300?text=Event+Banner';
+        document.querySelector('.bg-blue-50 p:nth-child(2)').textContent = `📍 category: ${eventData.category}`;
+        document.querySelector('.bg-blue-50 p:nth-child(3)').innerHTML = `🕒 Date & Time: <span>${eventData.startDate}</span>, <span>${eventData.startTime}</span>`;
+        
+      })
+      .catch(error => console.error('Error fetching event details:', error));
+
+    function editEvent() {
+      window.location.href = `/editEventPage?id=${eventData.eventId}`;
+    }
+    function deleteEvent() {
+      if (confirm(`Are you sure you want to delete event with ID: ${eventData.eventId}?`)) {
+        fetch(`http://localhost:8080/api/event/${eventData.eventId}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Event deleted successfully');
+            window.location.href = '/adminDash'; // Reload events after deletion
+          } else {
+            alert('Failed to delete event');
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting event:', error);
+          alert('An error occurred while deleting the event');
+        });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Home Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-white text-blue-900">
+
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <!-- 👋 Welcome -->
+     <nav class="bg-blue-900 text-white p-4 rounded mb-6 d-flex flex-col">
+      <h1 class="text-2xl font-bold">User Dashboard</h1>
+      <ul class="mt-4 space-y-2 d-flex flex-col">
+        <li><a href="/registeredEventsPage" class="hover:underline">Registered Events</a></li>
+        <li><a href="/logout" class="hover:underline">Logout</a></li>
+      </ul>
+    </nav>
+    <h1 class="text-3xl font-bold mb-4 text-blue-800">👋 Welcome, <span class="text-blue-600"
+        th:text="${username}"></span>!</h1>
+
+    <!-- 🔔 Notification Panel -->
+    <div class="bg-blue-50 border border-blue-200 p-4 rounded mb-6">
+      <h2 class="font-semibold mb-2">🔔 Notifications</h2>
+      <ul class="list-disc pl-5 text-sm">
+        <li>“AI in 2025” starts tomorrow at 10 AM.</li>
+        <li>Submit feedback for “Web Dev Bootcamp”.</li>
+        <li>New webinar added: “Cyber Ethics 101”.</li>
+      </ul>
+    </div>
+
+    <!-- 🔍 Search & Filter -->
+    
+    <!-- 📆 Upcoming Events with Banners -->
+    <script>
+      fetch('http://localhost:8080/api/orgEventsByStatus?status=upcoming')
+        .then(response => response.json())
+        .then(events => {
+          const container = document.querySelector('.grid');
+          const limitedEvents = events.slice(0, 10);
+          container.innerHTML = ''; // Clear existing content
+          limitedEvents.forEach(event => {
+            const eventCard = document.createElement('div');
+            eventCard.className = 'bg-white border border-blue-100 rounded-lg shadow hover:shadow-lg transition overflow-hidden';
+            eventCard.innerHTML = `
+              <img src="http://localhost:8080/images/${event.eventBanner}" alt="${event.eventName}" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h3 class="font-bold text-lg text-blue-700">${event.eventName}</h3>
+                <p class="text-sm">📍 ${event.location}</p>
+                <p class="text-sm">🕒 ${new Date(event.startDate).toLocaleDateString()} ${event.startTime}</p>
+                
+                <span class="inline-block mt-2 bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded">${event.category}</span>
+                <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="window.location.href='/SingleEvent?id=${event.eventId}'">View Details</button>
+                <button class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="registerForEvent(${event.eventId})">Register</button>
+              </div>
+            `;
+            container.appendChild(eventCard);
+          });
+        }).catch(error => {
+          console.error('Error fetching events:', error);
+          const container = document.querySelector('.grid');
+          container.innerHTML = '<p class="text-red-500">Failed to load events. Please try again later.</p>';
+        });
+        function registerForEvent(eventId) {
+          // Redirect to the registration page for the event
+          fetch(`http://localhost:8080/api/registerEvent?eventId=${eventId}`, {
+            method: 'POST'
+          }).then(response => {
+            if (response.ok) {
+              alert('Successfully registered for the event!');
+              window.location.href = '/registeredEventsPage'; // Redirect to registered events page
+            } else {
+              alert('Failed to register for the event. Please try again.');
+            }
+          }).catch(error => {
+            console.error('Error registering for event:', error);
+            alert('An error occurred while registering for the event.');
+          });
+        }
+
+    </script>
+
+
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-blue-800">📆 Upcoming Events</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Event Card with Banner -->
+
+
+      </div>
+    </div>
+
+    <!-- 🕓 Recently Registered Section -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-blue-800">🕓 Recently Registered</h2>
+      <div class="bg-blue-50 border border-blue-200 p-4 rounded">
+        <p class="text-sm mb-4">You have recently registered for events. Click the button below to view the complete
+          list of events you have registered for.</p>
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="showRegisteredEvents()">View
+          Recently Registered Events</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function showRegisteredEvents() {
+      // Redirect to the registered events page
+      window.location.href = '/registeredEventsPage';
+    }
+  </script>
+ 
+</body>
+
+</html>

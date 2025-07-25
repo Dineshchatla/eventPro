@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Event</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #e6f0ff;
+      min-height: 100vh;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin-top: 50px;
+      max-width: 800px;
+    }
+    h2 {
+      color: #0047ab;
+    }
+    .btn-outline-primary, .btn-primary {
+      border-color: #0a346e;
+      background-color: #0056d2;
+      color: white;
+    }
+    .btn-outline-primary:hover, .btn-primary:hover {
+      background-color: #003d91;
+      border-color: #003d91;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #0047ab;
+    }
+    .form-control, .form-select {
+      border: 1px solid #0047ab;
+      color: #0047ab;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #003d91;
+      box-shadow: 0 0 5px rgba(0, 61, 145, 0.5);
+    }
+    .card {
+      border: 1px solid #b3d4ff;
+      background-color: #f0f8ff;
+    }
+    .btn-success {
+      background-color: #008cba;
+      border-color: #008cba;
+    }
+    .btn-success:hover {
+      background-color: #006e9a;
+      border-color: #006e9a;
+    }
+  </style>
+</head>
+<body class="d-flex justify-content-center align-items-center">
+  <div class="container">
+    <h2 class="text-center">Edit Event</h2>
+
+    <form id="eventForm">
+      <div class="mb-3">
+        <label for="eventName" class="form-label">Event Name *</label>
+        <input type="text" class="form-control" id="eventName" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Select the event type *</label>
+        <div class="btn-group w-100" role="group">
+          <input type="radio" class="btn-check" name="eventType" id="venue" autocomplete="off" />
+          <label class="btn btn-outline-primary" for="venue">Venue Event</label>
+
+          <input type="radio" class="btn-check" name="eventType" id="online" autocomplete="off" />
+          <label class="btn btn-outline-primary" for="online">Online Event</label>
+
+          <input type="radio" class="btn-check" name="eventType" id="undecided" autocomplete="off" />
+          <label class="btn btn-outline-primary" for="undecided">Undecided</label>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="eventBanner" class="form-label">Upload New Banner (optional)</label>
+        <input type="file" class="form-control" id="eventBanner" />
+        <small class="text-muted">Leave empty to keep current banner.</small>
+      </div>
+
+      <div class="card p-3 mb-3">
+        <label for="platform" class="form-label">Platform</label>
+        <select class="form-select" id="platform">
+          <option>Zoom</option>
+          <option>Google Meet</option>
+          <option>Microsoft Teams</option>
+        </select>
+
+        <label class="form-label mt-2" for="meetingUrl">Meeting URL *</label>
+        <input type="url" class="form-control mb-2" id="meetingUrl" required />
+
+        <div class="row g-2">
+          <div class="col">
+            <input type="text" class="form-control" id="meetingId" placeholder="Meeting ID" />
+          </div>
+          <div class="col">
+            <input type="password" class="form-control" id="meetingPassword" placeholder="Password" />
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label>Event Date & Time *</label>
+        <div class="row g-2">
+          <div class="col-md-4">
+            <input type="date" class="form-control" id="startDate" />
+          </div>
+          <div class="col-md-4">
+            <input type="time" class="form-control" id="startTime" />
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="duration" placeholder="Duration" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label for="timezone">Timezone</label>
+          <select class="form-select" id="timezone">
+            <option>Asia/Kolkata (GMT+05:30)</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="currency">Currency</label>
+          <select class="form-select" id="currency">
+            <option>INR</option>
+            <option>USD</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="category">Category</label>
+        <select class="form-select" id="category">
+          <option>Education</option>
+          <option>Technology</option>
+          <option>Health</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-success w-100" onclick="submiteditEvent(event)">Update Event</button>
+    </form>
+  </div>
+
+  <script>
+    const eventId = new URLSearchParams(window.location.search).get("id"); // ?id=2
+
+    async function loadEventDetails() {
+      const res = await fetch(`http://localhost:8080/api/event/${eventId}`);
+      const event = await res.json();
+
+      document.getElementById("eventName").value = event.eventName;
+      document.getElementById(event.eventType)?.click();
+      document.getElementById("platform").value = event.platform;
+      document.getElementById("meetingUrl").value = event.meetingUrl;
+      document.getElementById("meetingId").value = event.meetingId;
+      document.getElementById("meetingPassword").value = event.meetingPassword;
+      document.getElementById("startDate").value = event.startDate;
+      document.getElementById("startTime").value = event.startTime;
+      document.getElementById("duration").value = event.duration;
+      document.getElementById("timezone").value = event.timezone;
+      document.getElementById("currency").value = event.currency;
+      document.getElementById("category").value = event.category;
+    }
+
+    async function submiteditEvent(event) {
+      event.preventDefault();
+
+      const eventName = document.getElementById("eventName").value.trim();
+      const eventType = document.querySelector('input[name="eventType"]:checked')?.id || "";
+      const platform = document.getElementById("platform").value;
+      const meetingUrl = document.getElementById("meetingUrl").value.trim();
+      const meetingId = document.getElementById("meetingId").value.trim();
+      const meetingPassword = document.getElementById("meetingPassword").value.trim();
+      const startDate = document.getElementById("startDate").value;
+      const startTime = document.getElementById("startTime").value;
+      const duration = document.getElementById("duration").value.trim();
+      const timezone = document.getElementById("timezone").value;
+      const currency = document.getElementById("currency").value;
+      const category = document.getElementById("category").value;
+      const bannerInput = document.getElementById("eventBanner");
+
+      const updateEvent = (bannerUrl) => {
+        fetch(`http://localhost:8080/api/event/${eventId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventName,
+            eventType,
+            eventBanner: bannerUrl,
+            platform,
+            meetingUrl,
+            meetingId,
+            meetingPassword,
+            startDate,
+            startTime,
+            duration,
+            timezone,
+            currency,
+            category
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Update failed");
+          return res.text();
+        })
+        .then(() => {
+          alert("Event updated successfully!");
+          window.location.href = "/adminDash";
+        })
+        .catch(err => {
+          console.error("Update error:", err);
+          alert("Failed to update event");
+        });
+      };
+
+      // Upload banner if selected
+      if (bannerInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append("image", bannerInput.files[0]);
+
+        fetch("http://localhost:8080/main/upload", {
+          method: "POST",
+          body: formData
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Upload failed");
+          return res.json();
+        })
+        .then(data => updateEvent(data.bannerUrl))
+        .catch(err => {
+          console.error("Banner error:", err);
+          alert("Banner upload failed");
+        });
+      } else {
+        // Use existing banner
+        fetch(`http://localhost:8080/api/event/${eventId}`)
+          .then(res => res.json())
+          .then(event => updateEvent(event.eventBanner))
+          .catch(err => {
+            console.error("Fetch error:", err);
+            alert("Failed to load existing banner");
+          });
+      }
+    }
+
+    loadEventDetails();
+  </script>
+</body>
+</html>

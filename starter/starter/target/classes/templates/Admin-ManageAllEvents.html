@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-blue-900 text-white p-5">
+      <h1 class="text-2xl font-bold mb-10">Dashboard</h1>
+      <nav class="space-y-4">
+        <button onclick="showSection('events')" class="block py-2 px-4 bg-blue-700 rounded w-full text-left">events</button>
+        <hr class="my-4 border-blue-700">
+        <a href="/adminDash" class="block py-2 px-4 hover:bg-blue-800 rounded">Dashboard</a>
+        <a href="/createEventPage" class="block py-2 px-4 hover:bg-blue-800 rounded">Create Event</a>
+        <a href="logout" class="block py-2 px-4 hover:bg-red-800 rounded btn-danger">Logout</a>
+
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 bg-gray-50">
+      <!-- events Section -->
+      <section id="eventsSection">
+        <h2 class="text-3xl font-semibold mb-6">All events</h2>
+
+      <!-- Filters -->
+<div class="flex space-x-4 mb-6">
+  <button onclick="loadData('all')" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-transform">All</button>
+  <button onclick="loadData('incomplete')" class="tab-btn text-blue-600 border border-blue-600 px-4 py-2 rounded hover:bg-blue-600 hover:text-white hover:scale-105 transition-transform">Incomplete</button>
+  <button onclick="loadData('ongoing')" class="tab-btn text-blue-600 border border-blue-600 px-4 py-2 rounded hover:bg-blue-600 hover:text-white hover:scale-105 transition-transform">Ongoing</button>
+  <button onclick="loadData('finished')" class="tab-btn text-blue-600 border border-blue-600 px-4 py-2 rounded hover:bg-blue-600 hover:text-white hover:scale-105 transition-transform">Finished</button>
+</div>
+
+
+        <!-- events Table -->
+        <div class="bg-white shadow rounded-lg overflow-auto">
+          <table class="min-w-full table-auto">
+            <thead class="bg-blue-100">
+              <tr class="text-left text-sm font-semibold text-blue-900">
+                <th class="p-4"><input type="checkbox" /></th>
+                <th class="p-4">Event id</th>
+                <th class="p-4">event Name</th>
+                <th class="p-4">Date</th>
+                <th class="p-4">Status</th>
+                <th class="p-4">Total Participants</th>
+                <th class="p-4">Platform</th>
+                <th class="p-4">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="text-sm">
+              <!-- JavaScript will inject rows here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Participants Section -->
+      <section id="participantsSection" class="hidden">
+        <h2 class="text-3xl font-semibold mb-6">Participants</h2>
+
+        <div class="bg-white shadow rounded-lg overflow-auto">
+          <table class="min-w-full table-auto">
+            <thead class="bg-blue-100">
+              <tr class="text-left text-sm font-semibold text-blue-900">
+                <th class="p-4">Participant ID</th>
+                <th class="p-4">Name</th>
+                <th class="p-4">Email</th>
+                <th class="p-4">Event</th>
+                <th class="p-4">Status</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm">
+              <tr class="border-t">
+                <td class="p-4">#P001</td>
+                <td class="p-4">John Doe</td>
+                <td class="p-4">john@example.com</td>
+                <td class="p-4">Tech Meetup</td>
+                <td class="p-4"><span class="px-2 py-1 text-xs bg-green-200 text-green-800 rounded">Confirmed</span></td>
+              </tr>
+              <tr class="border-t">
+                <td class="p-4">#P002</td>
+                <td class="p-4">Jane Smith</td>
+                <td class="p-4">jane@example.com</td>
+                <td class="p-4">Design Workshop</td>
+                <td class="p-4"><span class="px-2 py-1 text-xs bg-yellow-200 text-yellow-800 rounded">Pending</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let data = {
+      all: [],
+      incomplete: [],
+      ongoing: [],
+      finished: []
+    };
+    async function loadEvents() {
+      const [all, incomplete, ongoing, finished] = await Promise.all([
+        fetch("http://localhost:8080/api/events/all").then(res => res.json()),
+        fetch("http://localhost:8080/api/eventStatus/upcoming").then(res => res.json()),
+        fetch("http://localhost:8080/api/eventStatus/processing").then(res => res.json()),
+        fetch("http://localhost:8080/api/eventStatus/completed").then(res => res.json())
+      ]);
+
+    const transform = arr => arr.map(e => [
+      e.eventId,
+      e.eventName,
+      e.startDate,
+      e.eventStatus,
+      e.participants,
+      e.platform,
+      e.eventStatus === 'upcoming' ? 'yellow' :
+      e.eventStatus === 'processing' ? 'orange' :
+      e.eventStatus === 'completed' ? 'green' : 'blue'
+    ]);
+
+    data = {
+      all: transform(all),
+      incomplete: transform(incomplete),
+      ongoing: transform(ongoing),
+      finished: transform(finished)
+    };
+
+    console.log(data);
+    loadData('all');
+    
+  }
+
+  loadEvents();
+
+    function loadData(tab) {
+      const rows = data[tab];
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = "";
+
+      rows.forEach(row => {
+        const statusColor = {
+          yellow: 'bg-yellow-200 text-yellow-800',
+          green: 'bg-green-200 text-green-800',
+          red: 'bg-red-200 text-red-800',
+          blue: 'bg-blue-200 text-blue-800'
+        }[row[6]];
+
+        tbody.innerHTML += `
+          <tr class="border-t" ondblclick="openEvent('${row[0]}')">
+            <td class="p-4"><input type="checkbox" /></td>
+            <td class="p-4">${row[0]}</td>
+            <td class="p-4" >${row[1]}</td>
+            <td class="p-4">${row[2]}</td>
+            <td class="p-4"><span class="px-2 py-1 text-xs ${statusColor} rounded">${row[3]}</span></td>
+            <td class="p-4">${row[4]}</td>
+            <td class="p-4">${row[5]}</td>
+            <td class="p-4 space-x-2">
+              <button class="text-blue-600 hover:underline" onclick="editEvent('${row[0]}')">✏️</button>
+              <button class="text-red-600 hover:underline" onclick="deleteEvent('${row[0]}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+    function editEvent(eventId) {
+      alert(`Edit event with ID: ${eventId} \nThis feature is coming soon!`);
+    }
+
+    function deleteEvent(eventId) {
+      if (confirm(`Are you sure you want to delete event with ID: ${eventId}?`)) {
+        fetch(`http://localhost:8080/api/event/${eventId}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Event deleted successfully');
+            loadEvents(); // Reload events after deletion
+          } else {
+            alert('Failed to delete event');
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting event:', error);
+          alert('An error occurred while deleting the event');
+        });
+      }
+    }
+    function showSection(section) {
+      document.getElementById("eventsSection").classList.add("hidden");
+      document.getElementById("participantsSection").classList.add("hidden");
+
+      if (section === "events") {
+        document.getElementById("eventsSection").classList.remove("hidden");
+      } else if (section === "participants") {
+        document.getElementById("participantsSection").classList.remove("hidden");
+      }
+    }
+
+    function openEvent(eventId) {
+      window.location.href = `/SingleEvent?id=${eventId}`;
+    }
+
+    // Load initial data
+
+  </script>
+</body>
+</html>
